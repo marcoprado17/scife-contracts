@@ -1,20 +1,46 @@
 pragma solidity ^0.4.17;
 
-contract CampaignFactory {
-    address[] public deployedCampaigns;
+contract SmartCarInsuranceContractFactory {
+    address[] public deployedContracts;
 
-    function createCampaign(uint minimum) public {
-        address newCampaign = new Campaign(minimum, msg.sender);
-        deployedCampaigns.push(newCampaign);
+    function createSmartCarInsuranceContract(
+        string contractName,
+        string creatorName,
+        uint initialContribution,
+        uint monthlyContribution,
+        uint refundValue,
+        uint nMaxParticipants,
+        bool requireGpsAndBOConfirmation,
+        bool requireVotingToRefund,
+        uint minVotePercentageToRefund 
+    ) public {
+        address newContract = new SmartCarInsuranceContract(
+            contractName,
+            creatorName,
+            initialContribution,
+            monthlyContribution,
+            refundValue,
+            nMaxParticipants,
+            requireGpsAndBOConfirmation,
+            requireVotingToRefund,
+            minVotePercentageToRefund, 
+            msg.sender
+        );
+        deployedContracts.push(newContract);
     }
 
-    function getDeployedCampaigns() public view returns (address[]) {
-        return deployedCampaigns;
+    function getDeployedContracts() public view returns (address[]) {
+        return deployedContracts;
     }
 }
 
-contract Campaign {
-    struct Request {
+// Este contrato será responsavel por fornecer o dia e mês a partir do unix timestamp do bloco
+contract DateUtilsContract {
+
+}
+
+contract SmartCarInsuranceContract {
+    /* struct Request {
         string description;
         uint value;
         address recipient;
@@ -32,13 +58,23 @@ contract Campaign {
     modifier restricted() {
         require(msg.sender == manager);
         _;
-    }
+    } */
 
-    function Campaign(uint minimum, address creator) public {
-        manager = creator;
-        minimumContribution = minimum;
+    function SmartCarInsuranceContract(
+        string contractName,
+        string creatorName,
+        uint initialContribution,
+        uint monthlyContribution,
+        uint refundValue,
+        uint nMaxParticipants,
+        bool requireGpsAndBOConfirmation,
+        bool requireVotingToRefund,
+        uint minVotePercentageToRefund,
+        address creator
+    ) public {
+        
     }
-
+/* 
     function contribute() public payable {
         require(msg.value > minimumContribution);
 
@@ -92,5 +128,5 @@ contract Campaign {
 
     function getRequestsCount() public view returns (uint) {
         return requests.length;
-    }
+    } */
 }
