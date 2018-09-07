@@ -9,7 +9,7 @@
     "build": "next build"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "fs-extra": "^5.0.0",
     "ganache-cli": "^6.0.3",
