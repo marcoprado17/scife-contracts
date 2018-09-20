@@ -1,8 +1,10 @@
+const path = require('path');
+const configsPath = path.resolve(__dirname, 'configs.json');
 const HDWalletProvider = require('truffle-hdwallet-provider');
 const Web3 = require('web3');
 const compiledFactory = require('./build/SmartCarInsuranceContractFactory.json');
+const secrets = require('./secrets');
 const fs = require('fs');
-const secrets = JSON.parse(fs.readFileSync('secrets.json'))
 
 const provider = new HDWalletProvider(
   secrets.mnemonic,
@@ -22,5 +24,10 @@ const deploy = async () => {
     .send({ gas: '1000000', from: accounts[0] });
 
   console.log('Contract deployed to', result.options.address);
+
+  let configs = require(configsPath);
+  configs.factoryAddress = result.options.address;
+  fs.writeFileSync(configsPath, JSON.stringify(configs, null, 2), 'utf-8');
 };
+
 deploy();

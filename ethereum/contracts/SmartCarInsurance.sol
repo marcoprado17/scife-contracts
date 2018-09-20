@@ -9,9 +9,9 @@ contract SmartCarInsuranceContractFactory {
         uint monthlyContribution,
         uint refundValue,
         uint nMaxParticipants,
-        uint minVotePercentageToRefund 
+        uint minVotePercentageToRefund
     ) public {
-        address newContract = new SmartCarInsuranceContract(
+        address newContractAddress = new SmartCarInsuranceContract(
             contractName,
             initialContribution,
             monthlyContribution,
@@ -20,7 +20,7 @@ contract SmartCarInsuranceContractFactory {
             minVotePercentageToRefund, 
             msg.sender
         );
-        deployedContracts.push(newContract);
+        deployedContracts.push(newContractAddress);
     }
 
     function getDeployedContracts() public view returns (address[]) {
