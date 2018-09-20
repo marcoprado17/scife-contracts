@@ -1,1 +1,3 @@
-# scife-contracts
+# TODO
+
+* Disponibilizar em pacote npm
