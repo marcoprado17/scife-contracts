@@ -5,24 +5,18 @@ contract SmartCarInsuranceContractFactory {
 
     function createSmartCarInsuranceContract(
         string contractName,
-        string creatorName,
         uint initialContribution,
         uint monthlyContribution,
         uint refundValue,
         uint nMaxParticipants,
-        bool requireGpsAndBOConfirmation,
-        bool requireVotingToRefund,
         uint minVotePercentageToRefund 
     ) public {
         address newContract = new SmartCarInsuranceContract(
             contractName,
-            creatorName,
             initialContribution,
             monthlyContribution,
             refundValue,
             nMaxParticipants,
-            requireGpsAndBOConfirmation,
-            requireVotingToRefund,
             minVotePercentageToRefund, 
             msg.sender
         );
@@ -34,10 +28,10 @@ contract SmartCarInsuranceContractFactory {
     }
 }
 
-// Este contrato será responsavel por fornecer o dia e mês a partir do unix timestamp do bloco
-contract DateUtilsContract {
+// // Este contrato será responsavel por fornecer o dia e mês a partir do unix timestamp do bloco
+// contract DateUtilsContract {
 
-}
+// }
 
 contract SmartCarInsuranceContract {
     /* struct Request {
@@ -60,19 +54,30 @@ contract SmartCarInsuranceContract {
         _;
     } */
 
+    string contractName;
+    uint initialContribution;
+    uint monthlyContribution;
+    uint refundValue;
+    uint nMaxParticipants;
+    uint minVotePercentageToRefund;
+    address creator;
+
     function SmartCarInsuranceContract(
-        string contractName,
-        string creatorName,
-        uint initialContribution,
-        uint monthlyContribution,
-        uint refundValue,
-        uint nMaxParticipants,
-        bool requireGpsAndBOConfirmation,
-        bool requireVotingToRefund,
-        uint minVotePercentageToRefund,
-        address creator
+        string _contractName,
+        uint _initialContribution,
+        uint _monthlyContribution,
+        uint _refundValue,
+        uint _nMaxParticipants,
+        uint _minVotePercentageToRefund,
+        address _creator
     ) public {
-        
+        contractName = _contractName;
+        initialContribution = _initialContribution;
+        monthlyContribution = _monthlyContribution;
+        refundValue = _refundValue;
+        nMaxParticipants = _nMaxParticipants;
+        minVotePercentageToRefund = _minVotePercentageToRefund;
+        creator = _creator;
     }
 /* 
     function contribute() public payable {
