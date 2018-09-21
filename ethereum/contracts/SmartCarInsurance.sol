@@ -4,7 +4,7 @@ contract SmartCarInsuranceContractFactory {
     address[] public deployedContracts;
 
     function createSmartCarInsuranceContract(
-        string contractName,
+        string name,
         uint initialContribution,
         uint monthlyContribution,
         uint refundValue,
@@ -12,7 +12,7 @@ contract SmartCarInsuranceContractFactory {
         uint minVotePercentageToRefund
     ) public {
         address newContractAddress = new SmartCarInsuranceContract(
-            contractName,
+            name,
             initialContribution,
             monthlyContribution,
             refundValue,
@@ -35,19 +35,20 @@ contract SmartCarInsuranceContractFactory {
 
 contract SmartCarInsuranceContract {
     struct Details {
-        string contractName;
+        string name;
         uint initialContribution;
         uint monthlyContribution;
         uint refundValue;
         uint nMaxParticipants;
         uint minVotePercentageToRefund;
         address creatorId;
+        uint nParticipants;
     }
     
     Details public details;
     
     function SmartCarInsuranceContract(
-        string _contractName,
+        string _name,
         uint _initialContribution,
         uint _monthlyContribution,
         uint _refundValue,
@@ -56,13 +57,14 @@ contract SmartCarInsuranceContract {
         address _creatorId
     ) public {
         details = Details({
-            contractName: _contractName,
+            name: _name,
             initialContribution: _initialContribution,
             monthlyContribution: _monthlyContribution,
             refundValue: _refundValue,
             nMaxParticipants: _nMaxParticipants,
             minVotePercentageToRefund: _minVotePercentageToRefund,
-            creatorId: _creatorId
+            creatorId: _creatorId,
+            nParticipants: 0
         });
     }
 }
