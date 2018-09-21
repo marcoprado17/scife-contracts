@@ -34,14 +34,18 @@ contract SmartCarInsuranceContractFactory {
 // }
 
 contract SmartCarInsuranceContract {
-    string contractName;
-    uint initialContribution;
-    uint monthlyContribution;
-    uint refundValue;
-    uint nMaxParticipants;
-    uint minVotePercentageToRefund;
-    address creator;
-
+    struct Details {
+        string contractName;
+        uint initialContribution;
+        uint monthlyContribution;
+        uint refundValue;
+        uint nMaxParticipants;
+        uint minVotePercentageToRefund;
+        address creatorId;
+    }
+    
+    Details public details;
+    
     function SmartCarInsuranceContract(
         string _contractName,
         uint _initialContribution,
@@ -49,14 +53,16 @@ contract SmartCarInsuranceContract {
         uint _refundValue,
         uint _nMaxParticipants,
         uint _minVotePercentageToRefund,
-        address _creator
+        address _creatorId
     ) public {
-        contractName = _contractName;
-        initialContribution = _initialContribution;
-        monthlyContribution = _monthlyContribution;
-        refundValue = _refundValue;
-        nMaxParticipants = _nMaxParticipants;
-        minVotePercentageToRefund = _minVotePercentageToRefund;
-        creator = _creator;
+        details = Details({
+            contractName: _contractName,
+            initialContribution: _initialContribution,
+            monthlyContribution: _monthlyContribution,
+            refundValue: _refundValue,
+            nMaxParticipants: _nMaxParticipants,
+            minVotePercentageToRefund: _minVotePercentageToRefund,
+            creatorId: _creatorId
+        });
     }
 }
