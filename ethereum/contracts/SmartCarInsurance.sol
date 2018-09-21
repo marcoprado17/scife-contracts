@@ -45,7 +45,15 @@ contract SmartCarInsuranceContract {
         uint nParticipants;
     }
     
+    struct GpsLocation {
+        uint blockNumber;
+        uint timestamp;
+        string lat;
+        string long;
+    }
+
     Details public details;
+    mapping(address => GpsLocation[]) public gpsLocationsByUserAddress;
     
     function SmartCarInsuranceContract(
         string _name,
@@ -66,5 +74,16 @@ contract SmartCarInsuranceContract {
             creatorId: _creatorId,
             nParticipants: 0
         });
+    }
+
+    function addGpsLocation(string _lat, string _long) public {
+        GpsLocation memory newGpsLocation = GpsLocation({
+            blockNumber: 1,
+            timestamp: 1,
+            lat: _lat,
+            long: _long
+        });
+
+        gpsLocationsByUserAddress[msg.sender].push(newGpsLocation);
     }
 }
