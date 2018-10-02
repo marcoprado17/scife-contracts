@@ -28,11 +28,6 @@ contract SmartCarInsuranceContractFactory {
     }
 }
 
-// // Este contrato será responsavel por fornecer o dia e mês a partir do unix timestamp do bloco
-// contract DateUtilsContract {
-
-// }
-
 contract SmartCarInsuranceContract {
     struct Details {
         string name;
@@ -45,15 +40,15 @@ contract SmartCarInsuranceContract {
         uint nParticipants;
     }
     
-    struct GpsLocation {
-        uint blockNumber;
-        uint timestamp;
-        string lat;
-        string long;
+    struct GpsData {
+        uint blockUnixTimestamp;
+        uint creationUnixTimestamp;
+        string encryptedLatLong;
+        string key;
     }
 
     Details public details;
-    mapping(address => GpsLocation[]) public gpsLocationsByUserAddress;
+    mapping(address => GpsData[]) public gpsDataByUserAddress;
     
     function SmartCarInsuranceContract(
         string _name,
@@ -76,14 +71,18 @@ contract SmartCarInsuranceContract {
         });
     }
 
-    function addGpsLocation(string _lat, string _long) public {
-        GpsLocation memory newGpsLocation = GpsLocation({
-            blockNumber: 1,
-            timestamp: 1,
-            lat: _lat,
-            long: _long
+    function pushGpsData(uint _creationUnixTimestamp, string _encryptedLatLong) public {
+        GpsData memory newGpsData = GpsData({
+            blockUnixTimestamp: 1,
+            creationUnixTimestamp: 1,
+            encryptedLatLong: _encryptedLatLong,
+            key: ""
         });
 
-        gpsLocationsByUserAddress[msg.sender].push(newGpsLocation);
+        gpsDataByUserAddress[msg.sender].push(newGpsData);
+    }
+
+    function getLengthOfGpsData(address _address) public view returns(uint) {
+        return gpsDataByUserAddress[_address].length;
     }
 }
