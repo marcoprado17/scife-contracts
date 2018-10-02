@@ -73,8 +73,8 @@ contract SmartCarInsuranceContract {
 
     function pushGpsData(uint _creationUnixTimestamp, string _encryptedLatLong) public {
         GpsData memory newGpsData = GpsData({
-            blockUnixTimestamp: 1,
-            creationUnixTimestamp: 1,
+            blockUnixTimestamp: block.timestamp,
+            creationUnixTimestamp: _creationUnixTimestamp,
             encryptedLatLong: _encryptedLatLong,
             key: ""
         });
