@@ -1,4 +1,4 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.22;
 
 contract SmartCarInsuranceContractFactory {
     address[] public deployedContracts;
@@ -46,6 +46,7 @@ contract SmartCarInsuranceContract {
 
     Details public details;
     mapping(address => GpsData[]) public gpsDataByUserAddress;
+    mapping(address => bool) public members;
     
     function SmartCarInsuranceContract(
         string _name,
@@ -79,5 +80,11 @@ contract SmartCarInsuranceContract {
 
     function getLengthOfGpsData(address _address) public view returns(uint) {
         return gpsDataByUserAddress[_address].length;
+    }
+
+    function enterContract() public payable{
+        require(msg.value > details.initialContribution);
+        require(!members[msg.sender]);
+        members[msg.sender] = true;
     }
 }
