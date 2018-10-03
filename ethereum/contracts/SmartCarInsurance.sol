@@ -83,7 +83,7 @@ contract SmartCarInsuranceContract {
     }
 
     function enterContract() public payable{
-        require(msg.value > details.initialContribution);
+        require(msg.value >= details.initialContribution);
         require(!members[msg.sender]);
         members[msg.sender] = true;
     }
