@@ -56,11 +56,21 @@ contract SmartCarInsuranceContract {
         string key;
     }
 
+    struct Request {
+        string encodedData;
+        address creatorAddress;
+        mapping(address => bool) approvers;
+        uint nApprovers;
+        bool boConfirmed;
+        uint unixTimestampOfBlock;
+    }
+
     Details public details;
     mapping(address => GpsData[]) public gpsDataByUserAddress;
     mapping(address => bool) public membersMapping;
     address[] public members;
     address public factoryAddress;
+    Request[] public requests;
     
     function SmartCarInsuranceContract(
         string _name,
@@ -111,5 +121,97 @@ contract SmartCarInsuranceContract {
 
     function getMembers() public view returns (address[]) {
         return members;
+    }
+
+    /*
+        data represents the base64 encode of the below object:
+        {
+            unixTimesptampOfTheft: 1232143213,
+            latTheft: 1.2231
+            longTheft: 2.2314
+            keysOfGpsData = [
+                [122348763244, "secret"], # [unixTimestamp, key]
+                [122348763244, "secret"],
+                ...
+            ]
+        }
+     */
+    function createNewRefundRequest(string encodedData) public {
+        require(membersMapping[msg.sender]);
+        Request memory newRequest;
+        newRequest.encodedData = encodedData;
+        newRequest.creatorAddress = msg.sender;
+        newRequest.boConfirmed = false;
+        newRequest.nApprovers = 0;
+        newRequest.unixTimestampOfBlock = block.timestamp;
+        requests.push(newRequest);
+    }
+
+    function getMinApprovers() public view returns (uint) {
+        uint multi = details.minVotePercentageToRefund * details.nParticipants;
+        bool hasRemainder = true;
+        if(multi % 100 == 0){
+            hasRemainder = false;
+        }
+        uint minApprovers = multi / 100;
+        if(hasRemainder){
+            minApprovers++;
+        }
+        return minApprovers;
+    }
+
+    function approveRequest(uint requestIdx) public{
+        require(membersMapping[msg.sender]);
+        require(!requests[requestIdx].approvers[msg.sender]);
+        requests[requestIdx].approvers[msg.sender] = true;
+        requests[requestIdx].nApprovers++;
+        uint minApprovers = getMinApprovers();
+        if(
+            requests[requestIdx].nApprovers >= minApprovers
+            && address(this).balance >= details.refundValue
+            && requests[requestIdx].boConfirmed
+        ){
+            requests[requestIdx].creatorAddress.send(details.refundValue);
+        }
+    }
+
+    function getRefund(uint requestIdx) public {
+        require(requests[requestIdx].creatorAddress == msg.sender);
+        require(requests[requestIdx].boConfirmed);
+        uint minApprovers = getMinApprovers();
+        require(requests[requestIdx].nApprovers >= minApprovers);
+        require(address(this).balance >= details.refundValue);
+        requests[requestIdx].creatorAddress.transfer(details.refundValue);
+    }
+
+    function getLengthOfRequests() public view returns(uint) {
+        return requests.length;
+    }
+
+    function addressToBytes(address _addr) public pure returns(bytes) {
+        bytes32 value = bytes32(uint256(_addr));
+        bytes memory alphabet = "0123456789abcdef";
+
+        bytes memory str = new bytes(51);
+        str[0] = "0";
+        str[1] = "x";
+        for (uint i = 0; i < 20; i++) {
+            str[2+i*2] = alphabet[uint(value[i + 12] >> 4)];
+            str[3+i*2] = alphabet[uint(value[i + 12] & 0x0f)];
+        }
+        return str;
+    }
+
+    function confirmBO(uint requestIdx) public {
+        bytes memory validBoSenderAddress = "0x5e924ac15745b75e0d23afd68d1bb1adb8f43689";
+        bytes memory senderAddress = addressToBytes(msg.sender);
+        bool validSender = true;
+        for(uint i = 0; i < validBoSenderAddress.length; i++){
+            if(validBoSenderAddress[i] != senderAddress[i]){
+                validSender = false;
+            }
+        }
+        require(validSender);
+        requests[requestIdx].boConfirmed = true;
     }
 }
