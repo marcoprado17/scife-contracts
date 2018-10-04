@@ -2,6 +2,8 @@ pragma solidity ^0.4.17;
 
 contract SmartCarInsuranceContractFactory {
     address[] public deployedContracts;
+    mapping(address => bool) public deployedContractsMapping;
+    mapping(address => address[]) contractAddressesOfUsers;
 
     function createSmartCarInsuranceContract(
         string name,
@@ -19,10 +21,20 @@ contract SmartCarInsuranceContractFactory {
             msg.sender
         );
         deployedContracts.push(newContractAddress);
+        deployedContractsMapping[newContractAddress] = true;
     }
 
     function getDeployedContracts() public view returns (address[]) {
         return deployedContracts;
+    }
+
+    function userSignedToContract(address userAddress) public{
+        require(deployedContractsMapping[msg.sender]);
+        contractAddressesOfUsers[userAddress].push(msg.sender);
+    }
+
+    function getMyContractAddresses() public view returns (address[]){
+        return contractAddressesOfUsers[msg.sender];
     }
 }
 
@@ -46,7 +58,9 @@ contract SmartCarInsuranceContract {
 
     Details public details;
     mapping(address => GpsData[]) public gpsDataByUserAddress;
-    mapping(address => bool) public members;
+    mapping(address => bool) public membersMapping;
+    address[] public members;
+    address public factoryAddress;
     
     function SmartCarInsuranceContract(
         string _name,
@@ -65,9 +79,11 @@ contract SmartCarInsuranceContract {
             creatorId: _creatorId,
             nParticipants: 0
         });
+        factoryAddress = msg.sender;
     }
 
     function pushGpsData(uint _creationUnixTimestamp, string _encryptedLatLong) public {
+        require(membersMapping[msg.sender]);
         GpsData memory newGpsData = GpsData({
             blockUnixTimestamp: block.timestamp,
             creationUnixTimestamp: _creationUnixTimestamp,
@@ -83,8 +99,16 @@ contract SmartCarInsuranceContract {
     }
 
     function enterContract() public payable{
-        require(msg.value >= details.initialContribution);
-        require(!members[msg.sender]);
-        members[msg.sender] = true;
+        require(msg.value == details.initialContribution);
+        require(!membersMapping[msg.sender]);
+        require(members.length < details.nMaxParticipants);
+        membersMapping[msg.sender] = true;
+        members.push(msg.sender);
+        SmartCarInsuranceContractFactory smartCarInsuranceContractFactory = SmartCarInsuranceContractFactory(factoryAddress);
+        smartCarInsuranceContractFactory.userSignedToContract(msg.sender);
+    }
+
+    function getMembers() public view returns (address[]) {
+        return members;
     }
 }
