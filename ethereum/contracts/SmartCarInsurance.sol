@@ -48,12 +48,11 @@ contract SmartCarInsuranceContract {
         address creatorId;
         uint nParticipants;
     }
-    
+
     struct GpsData {
         uint blockUnixTimestamp;
         uint creationUnixTimestamp;
         string encryptedLatLong;
-        string key;
     }
 
     struct Request {
@@ -97,8 +96,7 @@ contract SmartCarInsuranceContract {
         GpsData memory newGpsData = GpsData({
             blockUnixTimestamp: block.timestamp,
             creationUnixTimestamp: _creationUnixTimestamp,
-            encryptedLatLong: _encryptedLatLong,
-            key: ""
+            encryptedLatLong: _encryptedLatLong
         });
 
         gpsDataByUserAddress[msg.sender].push(newGpsData);
