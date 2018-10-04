@@ -102,6 +102,7 @@ contract SmartCarInsuranceContract {
         require(msg.value == details.initialContribution);
         require(!membersMapping[msg.sender]);
         require(members.length < details.nMaxParticipants);
+        details.nParticipants++;
         membersMapping[msg.sender] = true;
         members.push(msg.sender);
         SmartCarInsuranceContractFactory smartCarInsuranceContractFactory = SmartCarInsuranceContractFactory(factoryAddress);

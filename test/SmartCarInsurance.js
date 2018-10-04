@@ -154,6 +154,7 @@ describe('SmartCarInsurance', () => {
                 value: initialContribution
             });
         }
+        assert.equal((await smartCarInsuranceContract.methods.details().call()).nParticipants, nMaxParticipants);
         let throwError = false;
         try {
             await smartCarInsuranceContract.methods.enterContract().send({
