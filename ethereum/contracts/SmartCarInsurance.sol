@@ -233,12 +233,13 @@ contract SmartCarInsuranceContract {
         }
     }
 
-    function getFirstNeighborGpsDataIndex(address userAddress, uint creationUnixTimestamp, uint nIndexes) public view returns(string){
-        uint mid = binarySearch(userAddress, creationUnixTimestamp, 0, gpsDataByUserAddress[userAddress].length);
-        uint low = mid-nIndexes/2;
-        if(low < 0){
-            low = 0;
-        }
-        return "abc";
+    function getFirstNeighborGpsDataIndex(address userAddress, uint creationUnixTimestamp, uint nIndexes) public view returns(uint){
+        // uint mid = binarySearch(userAddress, creationUnixTimestamp, 0, gpsDataByUserAddress[userAddress].length);
+        // uint low = mid-nIndexes/2;
+        // if(low < 0){
+        //     low = 0;
+        // }
+        uint low = 0;
+        return low;
     }
 }
