@@ -217,27 +217,36 @@ contract SmartCarInsuranceContract {
         requests[requestIdx].boConfirmed = true;
     }
 
-    function binarySearch(address userAddress, uint targetValue, uint low, uint high) public view returns (uint){
-        if(high < low){
-            return low;
-        }
-        uint mid = (low+high)/2;
-        if(gpsDataByUserAddress[userAddress][mid].creationUnixTimestamp > targetValue){
-            return binarySearch(userAddress, targetValue, low, mid-1);
-        }
-        else if(gpsDataByUserAddress[userAddress][mid].creationUnixTimestamp < targetValue){
-            return binarySearch(userAddress, targetValue, mid+1, high);
-        }
-        else{
-            return mid;
-        }
-    }
+    // function binarySearch(address userAddress, uint targetValue, uint low, uint high) public view returns (uint){
+    //     if(high < low){
+    //         return low;
+    //     }
+    //     uint mid = (low+high)/2;
+    //     if(gpsDataByUserAddress[userAddress][mid].creationUnixTimestamp > targetValue){
+    //         return binarySearch(userAddress, targetValue, low, mid-1);
+    //     }
+    //     else if(gpsDataByUserAddress[userAddress][mid].creationUnixTimestamp < targetValue){
+    //         return binarySearch(userAddress, targetValue, mid+1, high);
+    //     }
+    //     else{
+    //         return mid;
+    //     }
+    // }
 
-    function getFirstNeighborGpsDataIndex(address userAddress, uint creationUnixTimestamp, uint nIndexes) public view returns(uint){
-        uint mid = binarySearch(userAddress, creationUnixTimestamp, 0, gpsDataByUserAddress[userAddress].length-1);
-        uint low = mid-nIndexes/2;
-        if(low < 0){
-            low = 0;
+    function getGpsDataIndex(address userAddress, uint creationUnixTimestamp) public view returns(uint){
+        uint low = 0;
+        uint high = gpsDataByUserAddress[userAddress].length - 1;
+        while (low <= high) {
+            uint mid = (low + high) / 2;
+            if(gpsDataByUserAddress[userAddress][mid].creationUnixTimestamp > creationUnixTimestamp){
+                high = mid - 1;
+            }
+            else if (gpsDataByUserAddress[userAddress][mid].creationUnixTimestamp < creationUnixTimestamp){
+                low = mid + 1;
+            }
+            else {
+                return mid;
+            }
         }
         return low;
     }
