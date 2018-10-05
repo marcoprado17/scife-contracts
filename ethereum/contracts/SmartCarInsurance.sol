@@ -93,6 +93,10 @@ contract SmartCarInsuranceContract {
 
     function pushGpsData(uint _creationUnixTimestamp, string _encryptedLatLong) public {
         require(membersMapping[msg.sender]);
+        uint l = gpsDataByUserAddress[msg.sender].length;
+        if(l > 0){
+            require(_creationUnixTimestamp > gpsDataByUserAddress[msg.sender][l-1].creationUnixTimestamp);
+        }
         GpsData memory newGpsData = GpsData({
             blockUnixTimestamp: block.timestamp,
             creationUnixTimestamp: _creationUnixTimestamp,

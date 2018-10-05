@@ -92,6 +92,34 @@ describe('SmartCarInsurance', () => {
             from: accounts[0],
             gas: '1000000'
         });
+        await smartCarInsuranceContract.methods.pushGpsData(143, "abc").send({
+            from: accounts[0],
+            gas: '1000000'
+        });
+    });
+
+    it('not accept new gps data with decrescent creation timestamp', async () => {
+        await smartCarInsuranceContract.methods.enterContract().send({
+            from: accounts[0],
+            gas: '1000000',
+            value: initialContribution
+        });
+        await smartCarInsuranceContract.methods.pushGpsData(123, "abc").send({
+            from: accounts[0],
+            gas: '1000000'
+        });
+
+        let throwError = false;
+        try{
+            await smartCarInsuranceContract.methods.pushGpsData(113, "abc").send({
+                from: accounts[0],
+                gas: '1000000'
+            });
+        }
+        catch(err) {
+            throwError = true;
+        }
+        assert(throwError);
     });
 
     it('not accept new meber with contribution below minimum', async () => {
