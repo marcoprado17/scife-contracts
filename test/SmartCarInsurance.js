@@ -557,16 +557,16 @@ describe('SmartCarInsurance', () => {
             });
         }
 
-        let neighbors = await smartCarInsuranceContract.methods.getNeighborsGpsDataIndexesOf(accounts[0], 10, 5).call();
-        assert.deepEqual(neighbors, [8, 12]);
+        let firstNeighbor = await smartCarInsuranceContract.methods.getFirstNeighborGpsDataIndex(accounts[0], 10, 5).call();
+        assert.deepEqual(firstNeighbor, 8);
 
-        neighbors = await smartCarInsuranceContract.methods.getNeighborsGpsDataIndexesOf(accounts[0], 2, 3).call();
-        assert.deepEqual(neighbors, [1, 3]);
+        firstNeighbor = await smartCarInsuranceContract.methods.getFirstNeighborGpsDataIndex(accounts[0], 2, 3).call();
+        assert.deepEqual(firstNeighbor, 1);
 
-        neighbors = await smartCarInsuranceContract.methods.getNeighborsGpsDataIndexesOf(accounts[0], 13, 8).call();
-        assert.deepEqual(neighbors, [9, 17]);
+        firstNeighbor = await smartCarInsuranceContract.methods.getFirstNeighborGpsDataIndex(accounts[0], 13, 8).call();
+        assert.deepEqual(firstNeighbor, 9);
 
-        neighbors = await smartCarInsuranceContract.methods.getNeighborsGpsDataIndexesOf(accounts[0], 29, 7).call();
-        assert.deepEqual(neighbors, [26, 30]);
+        firstNeighbor = await smartCarInsuranceContract.methods.getFirstNeighborGpsDataIndex(accounts[0], 29, 7).call();
+        assert.deepEqual(firstNeighbor, 26);
     });
 });
