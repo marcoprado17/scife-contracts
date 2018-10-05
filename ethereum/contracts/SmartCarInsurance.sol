@@ -237,6 +237,12 @@ contract SmartCarInsuranceContract {
         if(gpsDataByUserAddress[userAddress].length == 0){
             return 0;
         }
+        if(creationUnixTimestamp <= gpsDataByUserAddress[userAddress][0].creationUnixTimestamp){
+            return 0;
+        }
+        if(creationUnixTimestamp >= gpsDataByUserAddress[userAddress][gpsDataByUserAddress[userAddress].length-1].creationUnixTimestamp){
+            return gpsDataByUserAddress[userAddress].length-1;
+        }
         uint low = 0;
         uint high = gpsDataByUserAddress[userAddress].length-1;
         while (low <= high) {
