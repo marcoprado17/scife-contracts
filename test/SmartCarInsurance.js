@@ -542,34 +542,34 @@ describe('SmartCarInsurance', () => {
         assert(account0Balance > initialAccount0Balance);
     });
 
-    it('return correct gps data neighbors', async () => {
+    it('binary search of gps data based on creation timestamp', async () => {
         await smartCarInsuranceContract.methods.enterContract().send({
             from: accounts[0],
             gas: '1000000',
             value: initialContribution
         });
 
-        let a = await smartCarInsuranceContract.methods.getFirstNeighborGpsDataIndex(accounts[0], 10, 5).call();
-        assert.deepEqual(a, 0);
+        let gpsDataIndex = await smartCarInsuranceContract.methods.getGpsDataIndex(accounts[0], 10).call();
+        assert.deepEqual(gpsDataIndex, 0);
 
-        // let data = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
-        // for(let i = 0; i < data.length; i++){
-        //     await smartCarInsuranceContract.methods.pushGpsData(data[i], "abc").send({
-        //         from: accounts[0],
-        //         gas: '1000000'
-        //     });
-        // }
+        let data = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+        for(let i = 0; i < data.length; i++){
+            await smartCarInsuranceContract.methods.pushGpsData(data[i], "abc").send({
+                from: accounts[0],
+                gas: '1000000'
+            });
+        }
 
-        // let firstNeighbor = await smartCarInsuranceContract.methods.getGpsDataIndex(accounts[0], 10, 5).call();
-        // assert.deepEqual(firstNeighbor, 8);
+        gpsDataIndex = await smartCarInsuranceContract.methods.getGpsDataIndex(accounts[0], 10).call();
+        assert.deepEqual(gpsDataIndex, 10);
 
-        // firstNeighbor = await smartCarInsuranceContract.methods.getGpsDataIndex(accounts[0], 2, 3).call();
-        // assert.deepEqual(firstNeighbor, 1);
+        gpsDataIndex = await smartCarInsuranceContract.methods.getGpsDataIndex(accounts[0], 2).call();
+        assert.deepEqual(gpsDataIndex, 2);
 
-        // firstNeighbor = await smartCarInsuranceContract.methods.getGpsDataIndex(accounts[0], 13, 8).call();
-        // assert.deepEqual(firstNeighbor, 9);
+        gpsDataIndex = await smartCarInsuranceContract.methods.getGpsDataIndex(accounts[0], 13).call();
+        assert.deepEqual(gpsDataIndex, 13);
 
-        // firstNeighbor = await smartCarInsuranceContract.methods.getGpsDataIndex(accounts[0], 29, 7).call();
-        // assert.deepEqual(firstNeighbor, 26);
+        gpsDataIndex = await smartCarInsuranceContract.methods.getGpsDataIndex(accounts[0], 29).call();
+        assert.deepEqual(gpsDataIndex, 29);
     });
 });

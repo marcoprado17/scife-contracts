@@ -234,11 +234,11 @@ contract SmartCarInsuranceContract {
     // }
 
     function getGpsDataIndex(address userAddress, uint creationUnixTimestamp) public view returns(uint){
-        uint low = 0;
-        uint high = gpsDataByUserAddress[userAddress].length;
-        if(gpsDataByUserAddress[userAddress].length > 0){
-            high--;
+        if(gpsDataByUserAddress[userAddress].length == 0){
+            return 0;
         }
+        uint low = 0;
+        uint high = gpsDataByUserAddress[userAddress].length-1;
         while (low <= high) {
             uint mid = (low + high) / 2;
             if(gpsDataByUserAddress[userAddress][mid].creationUnixTimestamp > creationUnixTimestamp){
