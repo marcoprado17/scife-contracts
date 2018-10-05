@@ -558,15 +558,15 @@ describe('SmartCarInsurance', () => {
         }
 
         let neighbors = await smartCarInsuranceContract.methods.getNeighborsGpsDataIndexesOf(accounts[0], 10, 5).call();
-        assert.deepEqual(neighbors, [8, 9, 10, 11, 12]);
+        assert.deepEqual(neighbors, [8, 12]);
 
         neighbors = await smartCarInsuranceContract.methods.getNeighborsGpsDataIndexesOf(accounts[0], 2, 3).call();
-        assert.deepEqual(neighbors, [1, 2, 3]);
+        assert.deepEqual(neighbors, [1, 3]);
 
         neighbors = await smartCarInsuranceContract.methods.getNeighborsGpsDataIndexesOf(accounts[0], 13, 8).call();
-        assert.deepEqual(neighbors, [9, 10, 11, 12, 13, 14, 15, 16, 17]);
+        assert.deepEqual(neighbors, [9, 17]);
 
         neighbors = await smartCarInsuranceContract.methods.getNeighborsGpsDataIndexesOf(accounts[0], 29, 7).call();
-        assert.deepEqual(neighbors, [26, 27, 28, 29, 30]);
+        assert.deepEqual(neighbors, [26, 30]);
     });
 });
