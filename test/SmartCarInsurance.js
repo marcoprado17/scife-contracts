@@ -27,7 +27,7 @@ beforeEach(async () => {
 
     factory = await new web3.eth.Contract(JSON.parse(smartCarInsuranceFactory.interface))
         .deploy({ data: smartCarInsuranceFactory.bytecode })
-        .send({ from: accounts[0], gas: '2000000' });
+        .send({ from: accounts[0], gas: '2500000' });
 
     await factory.methods.createSmartCarInsuranceContract(
         "Abc",
@@ -540,5 +540,33 @@ describe('SmartCarInsurance', () => {
         });
         account0Balance = await web3.eth.getBalance(accounts[0]);
         assert(account0Balance > initialAccount0Balance);
+    });
+
+    it('return correct gps data neighbors', async () => {
+        await smartCarInsuranceContract.methods.enterContract().send({
+            from: accounts[0],
+            gas: '1000000',
+            value: initialContribution
+        });
+
+        let data = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+        for(let i = 0; i < data.length; i++){
+            await smartCarInsuranceContract.methods.pushGpsData(data[i], "abc").send({
+                from: accounts[0],
+                gas: '1000000'
+            });
+        }
+
+        let neighbors = await smartCarInsuranceContract.methods.getNeighborsGpsDataIndexesOf(accounts[0], 10, 5).call();
+        assert.deepEqual(neighbors, [8, 9, 10, 11, 12]);
+
+        neighbors = await smartCarInsuranceContract.methods.getNeighborsGpsDataIndexesOf(accounts[0], 2, 3).call();
+        assert.deepEqual(neighbors, [1, 2, 3]);
+
+        neighbors = await smartCarInsuranceContract.methods.getNeighborsGpsDataIndexesOf(accounts[0], 13, 8).call();
+        assert.deepEqual(neighbors, [9, 10, 11, 12, 13, 14, 15, 16, 17]);
+
+        neighbors = await smartCarInsuranceContract.methods.getNeighborsGpsDataIndexesOf(accounts[0], 29, 7).call();
+        assert.deepEqual(neighbors, [26, 27, 28, 29, 30]);
     });
 });
