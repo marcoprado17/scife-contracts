@@ -572,4 +572,81 @@ describe('SmartCarInsurance', () => {
         gpsDataIndex = await smartCarInsuranceContract.methods.getGpsDataIndex(accounts[0], 29).call();
         assert.deepEqual(gpsDataIndex, 29);
     });
+
+    it('no member fail when call iAlreadyApprove', async () => {
+        await smartCarInsuranceContract.methods.enterContract().send({
+            from: accounts[0],
+            gas: '1000000',
+            value: initialContribution
+        });
+
+        await smartCarInsuranceContract.methods.createNewRefundRequest(newRefundRequestEncodedData).send({
+            from: accounts[0],
+            gas: '1000000'
+        });
+        
+        let throwError = false;
+        try {
+            await smartCarInsuranceContract.methods.iAlreadyApproved(0).call({
+                from: accounts[1]
+            });
+        }
+        catch(err){
+            throwError = true;
+        }
+        assert(throwError);
+    });
+
+    it('iAlreadyApprove returns false if member not approved the request yet', async () => {
+        await smartCarInsuranceContract.methods.enterContract().send({
+            from: accounts[0],
+            gas: '1000000',
+            value: initialContribution
+        });
+        await smartCarInsuranceContract.methods.enterContract().send({
+            from: accounts[1],
+            gas: '1000000',
+            value: initialContribution
+        });
+
+        await smartCarInsuranceContract.methods.createNewRefundRequest(newRefundRequestEncodedData).send({
+            from: accounts[0],
+            gas: '1000000'
+        });
+
+        let iAlreadyApproved = await smartCarInsuranceContract.methods.iAlreadyApproved(0).call({
+            from: accounts[1]
+        });
+
+        assert.equal(iAlreadyApproved, false);
+    });
+
+    it('iAlreadyApprove returns true if member already approved request', async () => {
+        await smartCarInsuranceContract.methods.enterContract().send({
+            from: accounts[0],
+            gas: '1000000',
+            value: initialContribution
+        });
+        await smartCarInsuranceContract.methods.enterContract().send({
+            from: accounts[1],
+            gas: '1000000',
+            value: initialContribution
+        });
+
+        await smartCarInsuranceContract.methods.createNewRefundRequest(newRefundRequestEncodedData).send({
+            from: accounts[0],
+            gas: '1000000'
+        });
+
+        await smartCarInsuranceContract.methods.approveRequest(0).send({
+            from: accounts[1],
+            gas: '1000000'
+        });
+
+        let iAlreadyApproved = await smartCarInsuranceContract.methods.iAlreadyApproved(0).call({
+            from: accounts[1]
+        });
+
+        assert.equal(iAlreadyApproved, true);
+    });
 });

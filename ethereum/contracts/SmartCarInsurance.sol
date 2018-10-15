@@ -259,4 +259,9 @@ contract SmartCarInsuranceContract {
         }
         return low;
     }
+
+    function iAlreadyApproved(uint requestIdx) public view returns (bool) {
+        require(membersMapping[msg.sender]);
+        return requests[requestIdx].approvers[msg.sender];
+    }
 }
