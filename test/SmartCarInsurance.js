@@ -403,6 +403,9 @@ describe('SmartCarInsurance', () => {
         });
         let account0Balance = await web3.eth.getBalance(accounts[0]);
         assert(initialAccount0Balance == account0Balance);
+
+        let request = await smartCarInsuranceContract.methods.requests(0).call();
+        assert(!request.refundMade);
     });
 
     it('cant liberate refund when new approval and bo isnt confirmed', async () => {
@@ -430,6 +433,9 @@ describe('SmartCarInsurance', () => {
 
         let account0Balance = await web3.eth.getBalance(accounts[0]);
         assert(initialAccount0Balance = account0Balance);
+
+        let request = await smartCarInsuranceContract.methods.requests(0).call();
+        assert(!request.refundMade);
     });
 
     it('cant liberate refund when new approval and contract balance isnt ok', async () => {
@@ -461,6 +467,9 @@ describe('SmartCarInsurance', () => {
 
         let account0Balance = await web3.eth.getBalance(accounts[0]);
         assert(account0Balance == initialAccount0Balance);
+
+        let request = await smartCarInsuranceContract.methods.requests(0).call();
+        assert(!request.refundMade);
     });
 
     it('liberate refund when new approval and contract balance is ok', async () => {
@@ -492,6 +501,9 @@ describe('SmartCarInsurance', () => {
 
         let account0Balance = await web3.eth.getBalance(accounts[0]);
         assert(account0Balance > initialAccount0Balance);
+
+        let request = await smartCarInsuranceContract.methods.requests(0).call();
+        assert(request.refundMade);
     });
 
     it('liberate refund when has approvals, bo, money and user activate get refund method', async () => {

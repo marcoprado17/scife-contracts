@@ -62,6 +62,7 @@ contract SmartCarInsuranceContract {
         uint nApprovers;
         bool boConfirmed;
         uint unixTimestampOfBlock;
+        bool refundMade;
     }
 
     Details public details;
@@ -146,6 +147,7 @@ contract SmartCarInsuranceContract {
         newRequest.boConfirmed = false;
         newRequest.nApprovers = 0;
         newRequest.unixTimestampOfBlock = block.timestamp;
+        newRequest.refundMade = false;
         requests.push(newRequest);
     }
 
@@ -174,6 +176,7 @@ contract SmartCarInsuranceContract {
             && requests[requestIdx].boConfirmed
         ){
             requests[requestIdx].creatorAddress.send(details.refundValue);
+            requests[requestIdx].refundMade = true;
         }
     }
 
@@ -184,6 +187,7 @@ contract SmartCarInsuranceContract {
         require(requests[requestIdx].nApprovers >= minApprovers);
         require(address(this).balance >= details.refundValue);
         requests[requestIdx].creatorAddress.transfer(details.refundValue);
+        requests[requestIdx].refundMade = true;
     }
 
     function getLengthOfRequests() public view returns(uint) {
