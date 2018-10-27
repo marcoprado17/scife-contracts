@@ -3,12 +3,15 @@ pragma solidity ^0.4.17;
 
 contract SmartCarInsuranceContractFactory {
     // Array contendo os endereços ethereum de todos os contratos 
-    // SmartCarInsuranceContract que SmartCarInsuranceContractFactory gerou
+    // SmartCarInsuranceContract que SmartCarInsuranceContractFactory 
+    // gerou
     address[] public deployedContracts;
-    // Hash table para checagem rápida se certo endereço ethereum representa um 
-    // um contrato SmartCarInsuranceContract deployado por SmartCarInsuranceContractFactory
+    // Hash table para checagem rápida se certo endereço 
+    // ethereum representa um contrato SmartCarInsuranceContract 
+    // deployado por SmartCarInsuranceContractFactory
     mapping(address => bool) public deployedContractsMapping;
-    // Mapeia os contratos SmartCarInsuranceContract que cada usuário participa
+    // Mapeia os contratos SmartCarInsuranceContract que cada 
+    // usuário participa
     mapping(address => address[]) contractAddressesOfUsers;
 
     // Método que cria uma nova instância de SmartCarInsuranceContract
@@ -19,7 +22,8 @@ contract SmartCarInsuranceContractFactory {
         uint nMaxParticipants,
         uint minVotePercentageToRefund
     ) public {
-        // Criando uma nova instância de um contrato SmartCarInsuranceContract
+        // Criando uma nova instância de um contrato 
+        // SmartCarInsuranceContract
         address newContractAddress = new SmartCarInsuranceContract(
             name,
             initialContribution,
@@ -30,8 +34,8 @@ contract SmartCarInsuranceContractFactory {
         );
         // Armazenando o contrato deployado em deployedContracts
         deployedContracts.push(newContractAddress);
-        // Adicionando à hash table deployedContractsMapping o endereço do novo
-        // contrato deployado
+        // Adicionando à hash table deployedContractsMapping o 
+        // endereço do novo contrato deployado
         deployedContractsMapping[newContractAddress] = true;
     }
 
@@ -40,17 +44,20 @@ contract SmartCarInsuranceContractFactory {
         return deployedContracts;
     }
 
-    // Adiciona à contractAddressesOfUsers que userAddress agora faz parte
-    // do contrato SmartCarInsuranceContract que chamou essa função (msg.sender)
+    // Adiciona à contractAddressesOfUsers que userAddress agora faz 
+    // parte do contrato SmartCarInsuranceContract que chamou essa 
+    // função (msg.sender)
     function userSignedToContract(address userAddress) public{
-        // Garantindo que quem chamou userSignedToContract seja de fato um
-        // contrato SmartCarInsuranceContract deployado por SmartCarInsuranceContractFactory
+        // Garantindo que quem chamou userSignedToContract seja de 
+        // fato um contrato SmartCarInsuranceContract deployado 
+        // por SmartCarInsuranceContractFactory
         require(deployedContractsMapping[msg.sender]);
         contractAddressesOfUsers[userAddress].push(msg.sender);
     }
 
-    // Obtendo a array contendo os endereços dos contratos SmartCarInsuranceContract
-    // que o usuário que chamou essa função participa
+    // Obtendo a array contendo os endereços dos contratos 
+    // SmartCarInsuranceContract que o usuário que chamou essa 
+    // função participa
     function getMyContractAddresses() public view returns (address[]){
         return contractAddressesOfUsers[msg.sender];
     }
