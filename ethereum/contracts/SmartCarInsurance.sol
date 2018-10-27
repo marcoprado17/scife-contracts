@@ -209,6 +209,7 @@ contract SmartCarInsuranceContract {
     }
 
     function confirmBO(uint requestIdx) public {
+        require(!requests[requestIdx].boConfirmed);
         bytes memory validBoSenderAddress = "0x5e924ac15745b75e0d23afd68d1bb1adb8f43689";
         bytes memory senderAddress = addressToBytes(msg.sender);
         bool validSender = true;
